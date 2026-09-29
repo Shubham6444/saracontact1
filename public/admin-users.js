@@ -66,16 +66,8 @@ window.contactProvider = function (phone, name) {
 };
 new MutationObserver(() => {
   const form = document.querySelector('#postForm');
-  if (!form || form.dataset.uploadReady) return;
-  form.dataset.uploadReady = 'true';
-  const previousImages = form.elements.namedItem('images');
-  const hiddenImages = document.createElement('input');
-  hiddenImages.type = 'hidden';
-  hiddenImages.name = 'images';
-  hiddenImages.value = previousImages?.value || (window.editPostImages || []).join('\n');
-  previousImages?.remove();
-  form.append(hiddenImages);
-  const field = document.createElement('div');
+  if (!form || form.dataset.postEnhancementsReady) return;
+  form.dataset.postEnhancementsReady = 'true';
   const categorySelect = form.querySelector('#postCategory');
   if (categorySelect && categories.length) {
     const selected = categorySelect.value;
@@ -88,32 +80,4 @@ new MutationObserver(() => {
     statusField.innerHTML = '<label>काम की स्थिति</label><select name="available"><option value="true">खुला — लोग चाहिए</option><option value="false">Full / बंद</option></select>';
     form.querySelector('.form-grid')?.append(statusField);
   }
-  field.className = 'field full';
-  field.innerHTML = '<label>तस्वीरें अपलोड करें (कम से कम 3, JPG / PNG / WebP)</label><input type="file" name="photos" accept="image/jpeg,image/png,image/webp" multiple><small>हर तस्वीर 1 MB तक, अधिकतम 8 तस्वीरें।</small>';
-  form.querySelector('.form-grid')?.prepend(field);
-  const submit = form.onsubmit;
-  form.onsubmit = async event => {
-    const input = form.elements.namedItem('photos');
-    const imageCount = hiddenImages.value.split(/\n|,/).map(value => value.trim()).filter(Boolean).length;
-    if (!input?.files?.length && !form.elements.namedItem('peopleNeeded') && imageCount < 3) {
-      event.preventDefault();
-      return notify('सेवा पोस्ट के लिए कम से कम 3 तस्वीरें अपलोड करें।');
-    }
-    if (!input?.files?.length) return submit.call(form, event);
-    event.preventDefault();
-    if (!form.elements.namedItem('peopleNeeded') && imageCount + input.files.length < 3) return notify('सेवा पोस्ट के लिए कम से कम 3 तस्वीरें अपलोड करें।');
-    const button = form.querySelector('[type="submit"]') || form.querySelector('.form-submit');
-    if (button) button.disabled = true;
-    try {
-      const data = new FormData();
-      for (const file of input.files) data.append('photos', file);
-      const response = await fetch('/api/uploads', { method: 'POST', body: data, credentials: 'same-origin' });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || 'तस्वीरें अपलोड नहीं हो सकीं।');
-      const imageField = form.elements.namedItem('images');
-      imageField.value = [...imageField.value.split(/\n|,/).map(value => value.trim()).filter(Boolean), ...result.images].join('\n');
-      await submit.call(form, event);
-    } catch (error) { notify(error.message); }
-    finally { if (button) button.disabled = false; }
-  };
 }).observe(document.querySelector('#modalContent'), { childList: true, subtree: true });

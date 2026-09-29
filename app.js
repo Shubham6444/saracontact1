@@ -8,7 +8,6 @@ const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
 const categoryRoutes = require('./routes/categories');
 const leadRoutes = require('./routes/leads');
-const uploadRoutes = require('./routes/uploads');
 const connectDatabase = require('./config/db');
 
 const app = express();
@@ -26,7 +25,6 @@ function configureApp() {
   app.use('/api/posts', postRoutes);
   app.use('/api/categories', categoryRoutes);
   app.use('/api/leads', leadRoutes);
-  app.use('/api/uploads', uploadRoutes);
   app.get('/api/health', (_req, res) => res.json({ status: 'ok', database: mongoose.connection.readyState === 1 ? 'connected' : 'offline' }));
   app.use(express.static(path.join(__dirname, 'public')));
   app.get('/post/:id', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'post.html')));
@@ -43,4 +41,7 @@ async function start() {
   configureApp();
   app.listen(port, () => console.log(`SevaMitra running at http://localhost:${port}`));
 }
-start().catch(() => { process.exitCode = 1; });
+start().catch(error => {
+  console.error('Server startup failed:', error.message);
+  process.exitCode = 1;
+});

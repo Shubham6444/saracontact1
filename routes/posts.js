@@ -1,6 +1,23 @@
 const router = require('express').Router();
 const Post = require('../models/Post');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
+function normalizeStoredImages(images = []) {
+  const normalized = [];
+  for (let index = 0; index < images.length; index += 1) {
+    const image = String(images[index] || '').trim();
+    if (/^data:image\/(?:jpeg|png|webp);base64$/i.test(image) && images[index + 1]) {
+      normalized.push(`${image},${String(images[index + 1]).trim()}`);
+      index += 1;
+    } else if (image) normalized.push(image);
+  }
+  return normalized;
+}
+function validImageUrls(images) {
+  return Array.isArray(images) && images.length <= 8 && images.every(image => {
+    try { return ['http:', 'https:'].includes(new URL(String(image)).protocol); }
+    catch { return false; }
+  });
+}
 router.get('/', async (req, res, next) => {
   try {
     const query = { status: 'approved', expiresAt: { $gt: new Date() } };
@@ -13,7 +30,8 @@ router.get('/', async (req, res, next) => {
     }
     if (req.query.available === 'true' || req.query.available === 'false') query.available = req.query.available === 'true';
     if (req.query.q) query.$text = { $search: req.query.q };
-    res.json(await Post.find(query).sort({ createdAt: -1 }).limit(100));
+    const posts = await Post.find(query).sort({ createdAt: -1 }).limit(100);
+    res.json(posts.map(post => ({ ...post.toObject(), images: normalizeStoredImages(post.images) })));
   } catch (error) { next(error); }
 });
 router.get('/mine', requireAuth, async (req, res, next) => {
@@ -24,7 +42,7 @@ router.get('/:id', async (req, res, next) => {
   try {
     const post = await Post.findOne({ _id: req.params.id, status: 'approved', expiresAt: { $gt: new Date() } });
     if (!post) return res.status(404).json({ message: 'यह पोस्ट अब उपलब्ध नहीं है।' });
-    res.json(post);
+    res.json({ ...post.toObject(), images: normalizeStoredImages(post.images) });
   } catch (error) { next(error); }
 });
 router.post('/', requireAuth, async (req, res, next) => {
@@ -37,7 +55,7 @@ router.post('/', requireAuth, async (req, res, next) => {
     else if (waNumber.length === 12 && waNumber.startsWith('91')) data.whatsapp = waNumber;
     else return res.status(400).json({ message: 'WhatsApp नंबर 10 अंकों का भारतीय नंबर या 91 के साथ 12 अंक होना चाहिए।' });
     data.images = Array.isArray(data.images) ? data.images.slice(0, 8) : [];
-    if (data.type !== 'job' && data.images.length < 3) return res.status(400).json({ message: 'सेवा पोस्ट के लिए कम से कम 3 तस्वीरें अपलोड करें।' });
+    if (!validImageUrls(data.images)) return res.status(400).json({ message: 'चित्रों के लिए केवल सही HTTP या HTTPS URL दें।' });
     data.status = 'approved';
     data.approvedAt = new Date();
     if (data.type === 'job') data.expiresAt = new Date(Date.now() + 7 * 86400000);
@@ -49,6 +67,10 @@ router.patch('/:id', requireAuth, async (req, res, next) => {
     const post = await Post.findById(req.params.id); if (!post) return res.status(404).json({ message: 'Post not found.' });
     if (req.session.user.role !== 'admin' && String(post.owner) !== req.session.user.id) return res.status(403).json({ message: 'You can edit your own posts only.' });
     const updates = { ...req.body }; delete updates.owner; delete updates.status;
+    if (updates.images !== undefined) {
+      if (!validImageUrls(updates.images)) return res.status(400).json({ message: 'चित्रों के लिए केवल सही HTTP या HTTPS URL दें।' });
+      updates.images = updates.images.map(image => String(image).trim());
+    }
     if (updates.phone !== undefined && !/^\d{10}$/.test(String(updates.phone))) return res.status(400).json({ message: 'संपर्क नंबर 10 अंकों का होना चाहिए।' });
     if (updates.whatsapp !== undefined) {
       const waNumber = String(updates.whatsapp || updates.phone || post.phone).replace(/\D/g, '');
