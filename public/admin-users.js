@@ -89,7 +89,7 @@ new MutationObserver(() => {
     form.querySelector('.form-grid')?.append(statusField);
   }
   field.className = 'field full';
-  field.innerHTML = '<label>तस्वीरें अपलोड करें (कम से कम 3, JPG / PNG / WebP)</label><input type="file" name="photos" accept="image/jpeg,image/png,image/webp" multiple><small>हर तस्वीर 5 MB तक, अधिकतम 8 तस्वीरें।</small>';
+  field.innerHTML = '<label>तस्वीरें अपलोड करें (कम से कम 3, JPG / PNG / WebP)</label><input type="file" name="photos" accept="image/jpeg,image/png,image/webp" multiple><small>हर तस्वीर 1 MB तक, अधिकतम 8 तस्वीरें।</small>';
   form.querySelector('.form-grid')?.prepend(field);
   const submit = form.onsubmit;
   form.onsubmit = async event => {
