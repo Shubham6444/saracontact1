@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0969d9" />
+    <title>SaraContact — आपके आसपास की सेवाएँ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/extras.css" />
+    <link rel="stylesheet" href="/category-toggle.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/"
+        ><span class="brand-mark">🤝</span
+        ><span
+          >Sara<span class="orange">Contact</span
+          ><small>आपके आसपास की भरोसेमंद सेवा</small></span
+        ></a
+      >
+      <nav class="main-nav">
+        <a href="#services">सेवाएँ</a><a href="#work">Live Work</a
+        ><button class="nav-link" id="dashboardBtn" hidden>मेरा पैनल</button>
+      </nav>
+      <div class="top-actions">
+        <button class="location-chip" id="locationBtn">
+          📍 <span id="locationLabel">शहर चुनें</span></button
+        ><button class="login-link" id="loginBtn">👤 लॉगिन</button
+        ><button class="button orange-button" id="providerBtn">
+          रजिस्टर / सेवा जोड़ें</button
+        ><button class="mobile-menu" id="menuBtn" aria-label="मेन्यू">
+          ☰
+        </button>
+      </div>
+    </header>
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">आपकी हर ज़रूरत, आपके पास</span>
+          <h1>आपके सभी काम के लिए<br /><span>भरोसेमंद सेवा प्रदाता</span></h1>
+          <p>
+            अपने पास के प्लंबर, इलेक्ट्रिशियन, मैकेनिक, सफ़ाई, ब्यूटी पार्लर और
+            कई सेवाएँ आसानी से खोजें और संपर्क करें।
+          </p>
+          <form class="searchbar" id="searchForm">
+            <span>⌕</span
+            ><input
+              id="searchInput"
+              placeholder="आपको कौन सी सेवा चाहिए? (जैसे — प्लंबर, इलेक्ट्रिशियन, पेंटर)"
+              aria-label="सेवा खोजें"
+            /><button class="button primary-button">
+              खोजें <span>→</span>
+            </button>
+          </form>
+          <div class="hero-buttons">
+            <a href="#services" class="button primary-button"
+              >⌕ &nbsp; सेवा खोजें</a
+            ><button class="button green-button" id="addServiceHero">
+              ⊕ &nbsp; अपनी सेवा जोड़ें
+            </button>
+          </div>
+          <div class="trust-line">
+            <span>✓ Verified providers</span><span>✓ सीधा संपर्क</span
+            ><span>✓ मुफ़्त में खोजें</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-photo"></div>
+          <div class="trust-card">
+            <div><i class="blue-icon">✓</i><b>भरोसेमंद लोग</b></div>
+            <div><i class="yellow-icon">₹</i><b>सही कीमत</b></div>
+            <div><i class="red-icon">⌖</i><b>आपके पास</b></div>
+            <div><i class="purple-icon">▦</i><b>हर तरह की सेवाएँ</b></div>
+          </div>
+          <div class="hero-caption">
+            <span>🛠️</span>
+            <div>
+              <strong>काम हो आसान</strong><small>बस खोजें और संपर्क करें</small>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section categories-section" id="services">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">एक जगह, हर काम</span>
+            <h2>सेवा की श्रेणियाँ</h2>
+          </div>
+          <div class="heading-actions">
+            <button
+              class="category-toggle"
+              id="categoryToggle"
+              type="button"
+              aria-expanded="true"
+            >
+              श्रेणियाँ छिपाएँ −</button
+            ><a href="#services" id="showAllCategories"
+              >सभी देखें <span>→</span></a
+            >
+          </div>
+        </div>
+        <div class="category-grid" id="categoryGrid"></div>
+      </section>
+      <section class="section listing-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">आपके आसपास</span>
+            <h2 id="listingTitle">लोकप्रिय सेवा प्रदाता</h2>
+          </div>
+          <div class="heading-actions">
+            <select id="availabilityFilter" aria-label="उपलब्धता">
+              <option value="">सभी प्रदाता</option>
+              <option value="true">अभी उपलब्ध</option>
+              <option value="false">अभी उपलब्ध नहीं</option></select
+            ><a href="#services" id="showAllServices"
+              >सभी देखें <span>→</span></a
+            >
+          </div>
+        </div>
+        <div class="filters">
+          <label
+            >📍
+            <input id="cityFilter" placeholder="शहर" aria-label="शहर" /></label
+          ><label
+            >⌖
+            <input
+              id="pincodeFilter"
+              inputmode="numeric"
+              maxlength="6"
+              placeholder="पिनकोड"
+              aria-label="पिनकोड" /></label
+          ><button id="clearFilters">फ़िल्टर हटाएँ</button>
+        </div>
+        <div class="service-grid" id="serviceGrid"></div>
+        <div class="empty-state" id="emptyServices" hidden>
+          <span>🔎</span>
+          <h3>अभी यहाँ कोई लिस्टिंग नहीं है</h3>
+          <p>किसी दूसरी श्रेणी या पिनकोड से खोजें, या अपनी सेवा जोड़ें।</p>
+          <button class="button primary-button" id="emptyAdd">
+            अपनी सेवा जोड़ें
+          </button>
+        </div>
+      </section>
+      <section class="work-section" id="work">
+        <div class="section work-inner">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">मौके आपके पास</span>
+              <h2>Live Work <span class="live-pill">● LIVE</span></h2>
+              <p>दिहाड़ी, घंटे या तय भुगतान वाले काम देखें।</p>
+            </div>
+            <button class="button white-button" id="postJobBtn">
+              + काम पोस्ट करें
+            </button>
+          </div>
+          <div class="work-grid" id="workGrid"></div>
+          <div class="empty-work" id="emptyWork">
+            अभी कोई खुला काम नहीं है। नए मौके जल्द जुड़ेंगे।
+          </div>
+        </div>
+      </section>
+      <section class="how-section">
+        <div class="section">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">आसान और तेज़</span>
+              <h2>कैसे काम करता है?</h2>
+            </div>
+          </div>
+          <div class="steps">
+            <article>
+              <span class="step-icon">⌕</span>
+              <div>
+                <b>1. सेवा खोजें</b>
+                <p>अपने आसपास की सेवा चुनें।</p>
+              </div>
+              <span class="step-arrow">→</span>
+            </article>
+            <article>
+              <span class="step-icon blue">▤</span>
+              <div>
+                <b>2. सेवा प्रदाता चुनें</b>
+                <p>प्रोफ़ाइल और जानकारी देखें।</p>
+              </div>
+              <span class="step-arrow">→</span>
+            </article>
+            <article>
+              <span class="step-icon pink">☎</span>
+              <div>
+                <b>3. संपर्क करें</b>
+                <p>सीधे कॉल या WhatsApp करें।</p>
+              </div>
+              <span class="step-arrow">→</span>
+            </article>
+            <article>
+              <span class="step-icon green">✓</span>
+              <div>
+                <b>4. काम पूरा करें</b>
+                <p>अपना काम आसानी से करवाएँ।</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="provider-cta section">
+        <div class="cta-icon">🧰</div>
+        <div>
+          <span class="eyebrow">अपने काम को आगे बढ़ाएँ</span>
+          <h2>क्या आप कोई सेवा देते हैं?</h2>
+          <p>अपनी दुकान या सेवा यहाँ जोड़ें और नए ग्राहकों तक पहुँचें।</p>
+        </div>
+        <button class="button orange-button" id="providerCta">
+          + अपनी सेवा जोड़ें <span>→</span>
+        </button>
+      </section>
+    </main>
+    <footer>
+      <a class="brand footer-brand" href="/"
+        >🤝 <span>Sara<span class="orange">Contact</span></span></a
+      ><span>आपके आसपास की भरोसेमंद सेवाएँ</span><span>© 2026 SaraContact</span>
+    </footer>
+
+    <div class="modal-backdrop" id="modalBackdrop" hidden>
+      <section
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <button class="modal-close" id="modalClose" aria-label="बंद करें">
+          ×
+        </button>
+        <div class="modal-content" id="modalContent"></div>
+      </section>
+    </div>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="/app.js" defer></script>
+    <script src="/live-work.js" defer></script>
+    <script src="/admin-users.js" defer></script>
+    <script src="/marketplace.js" defer></script>
+    <script src="/admin-inbox.js" defer></script>
+  </body>
+</html>
